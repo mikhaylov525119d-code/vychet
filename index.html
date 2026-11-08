@@ -8,108 +8,113 @@
 <meta property="og:title" content="Калькулятор налогового вычета">
 <meta property="og:description" content="Узнайте за минуту, сколько вам вернёт государство. Юлия Михайлова, налоговый консультант.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#f7f2ea">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%23b8662a'/><path d='M26 48V16h9a9 9 0 0 1 0 18H21M21 41h15' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<meta name="theme-color" content="#f3eee5">
+<link rel="icon" type="image/png" href="assets/logo-mark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f7f2ea; --surface: #ffffff; --surface-2: #fbf7f1;
-    --ink: #2a2420; --muted: #7a6e63; --line: #e8ddd0;
-    --accent: #b8662a; --accent-ink: #8f4c1c; --accent-soft: #f5e6d5;
-    --gold: linear-gradient(180deg, #c98a45 0%, #a8682d 55%, #8a5221 100%);
-    --ok: #2f7a4f;
-    --radius: 22px;
-    --shadow: 0 1px 2px rgba(60,40,20,.05), 0 10px 30px rgba(120,80,40,.08);
+    --bg: #f3eee5; --surface: #faf7f1; --surface-2: #f5f1e8;
+    --ink: #2e3329; --muted: #6b6f62; --line: #dcd4c4;
+    --accent: #46503d; --accent-2: #5b6650; --accent-ink: #46503d; --accent-soft: #e6e4d8;
+    --sage: #7b8567; --gold-c: #b0925a; --gold-2: #c9ad74;
+    --gold: linear-gradient(180deg, #c9ad74 0%, #ad8c52 55%, #8f7140 100%);
+    --radius: 20px;
+    --shadow: 0 1px 2px rgba(46,51,41,.05), 0 14px 32px rgba(70,80,61,.09);
+    --serif: 'Cormorant Garamond', Georgia, serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html { -webkit-text-size-adjust: 100%; }
-  body { background: var(--bg); color: var(--ink); font-family: 'Manrope', system-ui, -apple-system, sans-serif; font-size: 16px; line-height: 1.45;
-    background-image: radial-gradient(90% 40% at 100% 0%, #f1dfc8 0%, rgba(241,223,200,0) 70%); background-repeat: no-repeat; min-height: 100vh; }
-  .wrap { max-width: 520px; margin: 0 auto; padding: 22px 16px 110px; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Manrope', system-ui, -apple-system, sans-serif; font-size: 16px; line-height: 1.5;
+    background-image: radial-gradient(90% 40% at 100% 0%, #e9e2d1 0%, rgba(233,226,209,0) 70%); background-repeat: no-repeat; min-height: 100vh; }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 18px 16px 110px; }
 
-  header .brand { display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
-  header .brand i { width: 28px; height: 2px; background: var(--accent); }
-  h1 { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 34px; line-height: 1.1; margin: 18px 0 10px; letter-spacing: -.01em; }
-  h1 span { color: var(--accent); }
+  header .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; color: inherit; }
+  header .brand img { height: 46px; width: auto; }
+  header .brand span { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); border-left: 1px solid var(--line); padding-left: 14px; line-height: 1.5; }
+  .kick { margin-top: 26px; font-size: 12px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; color: var(--gold-c); }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: 44px; line-height: .98; margin: 8px 0 12px; text-transform: uppercase; color: var(--accent); letter-spacing: .01em; }
+  h1 span { display: block; font-style: italic; text-transform: none; color: var(--gold-c); font-weight: 500; }
   .lead { color: var(--muted); font-size: 16px; }
 
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; margin-top: 18px; }
-  .step { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 17px; margin-bottom: 14px; }
-  .step b { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; flex: none; font-size: 14px; color: #fff; background: var(--accent); }
+  .step { display: flex; align-items: center; gap: 12px; font-family: var(--serif); font-weight: 600; font-size: 24px; color: var(--accent); margin-bottom: 14px; }
+  .step b { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; flex: none; font: 700 14px 'Manrope', sans-serif; color: var(--surface); background: var(--accent); }
   .hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
 
   label.f { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; }
   label.f:first-child { margin-top: 0; }
   .money { position: relative; }
-  .money input, select { width: 100%; height: 52px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--surface-2);
-    font: 700 18px 'Manrope', sans-serif; color: var(--ink); padding: 0 44px 0 16px; outline: none; transition: border-color .15s, background .15s; }
+  .money input, select { width: 100%; height: 52px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff;
+    font: 700 18px 'Manrope', sans-serif; color: var(--ink); padding: 0 44px 0 16px; outline: none; transition: border-color .15s, box-shadow .15s; }
   select { padding-right: 16px; font-size: 16px; appearance: none; -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' fill='none' stroke='%237a6e63' stroke-width='2'/></svg>"); background-repeat: no-repeat; background-position: right 16px center; }
-  .money input:focus, select:focus { border-color: var(--accent); background: #fff; }
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' fill='none' stroke='%236b6f62' stroke-width='2'/></svg>"); background-repeat: no-repeat; background-position: right 16px center; }
+  .money input:focus, select:focus { border-color: var(--sage); box-shadow: 0 0 0 4px rgba(123,133,103,.15); }
   .money::after { content: '₽'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--muted); }
-  .money input::placeholder { color: #c4b8aa; font-weight: 600; }
+  .money input::placeholder { color: #bdb6a6; font-weight: 600; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--line);
-    background: var(--surface-2); font: 700 14px 'Manrope', sans-serif; color: var(--ink); cursor: pointer; user-select: none; transition: all .15s; }
-  .chip svg { width: 20px; height: 20px; flex: none; }
-  .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+    background: #fff; font: 700 14px 'Manrope', sans-serif; color: var(--ink); cursor: pointer; user-select: none; transition: all .15s; }
+  .chip svg { width: 20px; height: 20px; flex: none; color: var(--sage); }
+  .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--surface); }
+  .chip[aria-pressed="true"] svg { color: var(--gold-2); }
 
-  .group { display: none; margin-top: 16px; padding: 16px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); }
+  .group { display: none; margin-top: 16px; padding: 16px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); }
   .group.on { display: block; animation: fade .2s ease-out; }
   @keyframes fade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-  .group h3 { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-  .group h3 svg { width: 20px; height: 20px; }
+  .group h3 { font-family: var(--serif); font-size: 21px; font-weight: 600; color: var(--accent); display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .group h3 svg { width: 20px; height: 20px; color: var(--gold-c); }
   .check { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; font-size: 14px; cursor: pointer; }
   .check input { width: 20px; height: 20px; accent-color: var(--accent); flex: none; margin-top: 1px; }
-  .stepper { display: flex; align-items: center; gap: 0; border: 1.5px solid var(--line); border-radius: 14px; overflow: hidden; width: max-content; background: var(--surface-2); }
+  .stepper { display: flex; align-items: center; gap: 0; border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; width: max-content; background: #fff; }
   .stepper button { width: 48px; height: 48px; border: 0; background: transparent; font: 700 22px 'Manrope'; color: var(--accent); cursor: pointer; }
   .stepper output { min-width: 40px; text-align: center; font-weight: 800; font-size: 18px; }
 
   /* результат */
-  .result { background: linear-gradient(180deg, #fff 0%, #fdf8f2 100%); border: 1.5px solid #e6cfb4; }
-  .result .k { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-  .big { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 46px; line-height: 1.05; margin: 6px 0 2px;
+  .result { background: var(--surface); border: 1.5px solid var(--gold-2); }
+  .result .k { font-size: 12px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; color: var(--gold-c); }
+  .big { font-family: var(--serif); font-weight: 600; font-size: 56px; line-height: 1; margin: 6px 0 2px;
     background: var(--gold); -webkit-background-clip: text; background-clip: text; color: transparent; white-space: nowrap; }
   .empty { color: var(--muted); font-size: 15px; padding: 6px 0 2px; }
-  .rows { margin-top: 14px; border-top: 1px dashed var(--line); }
-  .row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 15px; }
-  .row span:last-child { font-weight: 800; white-space: nowrap; }
+  .rows { margin-top: 14px; border-top: 1px solid var(--line); }
+  .row { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .row span:last-child { font-weight: 800; white-space: nowrap; color: var(--accent); }
   .row small { display: block; color: var(--muted); font-size: 12px; }
   .notes { margin-top: 14px; display: grid; gap: 8px; }
-  .note { display: flex; gap: 10px; font-size: 14px; padding: 12px 14px; border-radius: 14px; background: var(--accent-soft); color: #5a3a1f; }
-  .note svg { width: 20px; height: 20px; flex: none; margin-top: 1px; }
-  .note.warn { background: #fdf0e1; }
+  .note { display: flex; gap: 10px; font-size: 14px; padding: 12px 14px; border-radius: 12px; background: var(--accent-soft); color: #3c4534; }
+  .note svg { width: 20px; height: 20px; flex: none; margin-top: 1px; color: var(--sage); }
+  .note.warn { background: #efe6d2; }
 
-  .cta { margin-top: 18px; }
-  .cta h2 { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 24px; line-height: 1.15; }
-  .cta p { color: var(--muted); font-size: 14px; margin: 6px 0 14px; }
+  .cta { margin-top: 18px; background: var(--sage); border-color: var(--sage); color: #f6f1e7; }
+  .cta h2 { font-family: var(--serif); font-weight: 600; font-size: 30px; line-height: 1.02; text-transform: uppercase; }
+  .cta p { color: rgba(246,241,231,.85); font-size: 14px; margin: 8px 0 16px; }
   .btns { display: grid; gap: 10px; }
-  .btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 54px; border-radius: 16px; font: 800 16px 'Manrope', sans-serif;
-    text-decoration: none; cursor: pointer; border: 0; transition: transform .1s, filter .15s; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 54px; border-radius: 8px; font: 700 14px 'Manrope', sans-serif;
+    letter-spacing: .1em; text-transform: uppercase; text-decoration: none; cursor: pointer; border: 0; transition: transform .1s, background .2s; }
   .btn:active { transform: scale(.98); }
   .btn svg { width: 22px; height: 22px; }
-  .btn.main { color: #fff; background: linear-gradient(180deg, #c7773a 0%, #a85a22 100%); box-shadow: 0 8px 22px rgba(168,90,34,.3); }
-  .btn.sec { color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); }
-  .btn.ghost { color: var(--accent-ink); background: transparent; border: 1.5px dashed #dcc3a6; height: 48px; font-size: 15px; }
+  .btn.main { color: var(--accent); background: #f6f1e7; box-shadow: 0 10px 24px rgba(30,35,25,.25); }
+  .btn.main:hover { background: #fff; }
+  .btn.sec { color: #f6f1e7; background: transparent; border: 1.5px solid rgba(246,241,231,.6); }
+  .btn.sec:hover { background: rgba(246,241,231,.12); }
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
   footer { margin-top: 26px; font-size: 12px; color: var(--muted); text-align: center; line-height: 1.6; }
-  footer a { color: var(--accent-ink); }
-  .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; background: var(--ink); color: #fff; font-weight: 700; font-size: 14px;
-    padding: 12px 18px; border-radius: 12px; transition: all .25s; pointer-events: none; z-index: 10; }
+  footer a { color: var(--accent); }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; background: var(--accent); color: #f6f1e7; font-weight: 700; font-size: 14px;
+    padding: 12px 18px; border-radius: 10px; transition: all .25s; pointer-events: none; z-index: 10; max-width: calc(100% - 32px); text-align: center; }
   .toast.on { opacity: 1; transform: translate(-50%, 0); }
   [hidden] { display: none !important; }
   .bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-    background: rgba(255,255,255,.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line);
+    background: rgba(250,247,241,.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line);
     transform: translateY(110%); transition: transform .25s; }
   .bar.on { transform: none; }
   .bar a { max-width: 520px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; text-decoration: none; color: var(--ink); }
-  .bar .t { font-size: 13px; color: var(--muted); font-weight: 600; }
-  .bar .v { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 26px; background: var(--gold); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .bar .go { flex: none; height: 42px; padding: 0 16px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; font-size: 14px; color: #fff; background: linear-gradient(180deg, #c7773a 0%, #a85a22 100%); }
+  .bar .t { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .04em; }
+  .bar .v { font-family: var(--serif); font-weight: 600; font-size: 32px; line-height: 1; background: var(--gold); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .bar .go { flex: none; height: 42px; padding: 0 16px; border-radius: 8px; display: grid; place-items: center; font-weight: 700; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #f6f1e7; background: var(--accent); }
 </style>
 </head>
 <body>
@@ -130,9 +135,10 @@
 
 <div class="wrap">
   <header>
-    <div class="brand"><i></i>Юлия Михайлова · налоговый консультант</div>
+    <a class="brand" href="https://mikhaylov525119d-code.github.io/yulia-mikhaylova/" target="_blank" rel="noopener"><img src="assets/logo-mark.png" alt="ЮМ" width="637" height="508"><span>Юлия Михайлова<br>налоговый консультант</span></a>
+    <div class="kick">бесплатно, за минуту</div>
     <h1>Калькулятор <span>налогового вычета</span></h1>
-    <p class="lead">Узнайте за минуту, сколько налога вам вернёт государство.</p>
+    <p class="lead">Узнайте, сколько налога вам вернёт государство.</p>
   </header>
 
   <!-- 1. Доход -->
@@ -246,7 +252,7 @@
   <footer>
     Расчёт примерный и не является налоговой консультацией. Точную сумму можно назвать после проверки документов.<br>
     Правила вычетов на 2026 год, ставка НДФЛ 13%.<br>
-    © Юлия Михайлова, налоговый консультант · работаю по всей России
+    © <a href="https://mikhaylov525119d-code.github.io/yulia-mikhaylova/" target="_blank" rel="noopener">Юлия Михайлова</a>, налоговый консультант · работаю по всей России
   </footer>
 </div>
 <div class="toast" id="toast"></div>
