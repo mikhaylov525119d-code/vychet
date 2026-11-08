@@ -233,16 +233,14 @@
   <!-- CTA -->
   <section class="card cta">
     <h2>Хотите точный расчёт и вернуть деньги без хлопот?</h2>
-    <p>Напишите мне — проверю ваш случай, соберу документы и подам декларацию за вас.</p>
+    <p>Напишите мне — проверю ваш случай, соберу документы и подам декларацию за вас. Ваш расчёт сам скопируется в сообщение.</p>
     <div class="btns" id="btns">
       <a class="btn main" id="b-max" target="_blank" rel="noopener"><span>Написать в <b style="font-weight:900;letter-spacing:.03em">MAX</b></span></a>
       <div class="two">
         <a class="btn sec" id="b-ig" target="_blank" rel="noopener"><svg><use href="#i-ig"/></svg>Instagram</a>
         <a class="btn sec" id="b-tg" target="_blank" rel="noopener"><svg><use href="#i-tg"/></svg>Telegram</a>
       </div>
-      <a class="btn sec" id="b-phone" href="tel:+79224401919"><svg><use href="#i-phone"/></svg><span id="phoneText">+7 922 440 19 19</span></a>
-      <button class="btn ghost" id="b-copy" type="button"><svg><use href="#i-copy"/></svg>Скопировать мой расчёт</button>
-    </div>
+      <a class="btn sec" id="b-phone" href="tel:+79224401919"><svg><use href="#i-phone"/></svg><span id="phoneText">+7 922 440 19 19</span></a>    </div>
   </section>
 
   <footer>
@@ -251,7 +249,7 @@
     © Юлия Михайлова, налоговый консультант · работаю по всей России
   </footer>
 </div>
-<div class="toast" id="toast">Расчёт скопирован — вставьте его в сообщение</div>
+<div class="toast" id="toast"></div>
 <div class="bar" id="bar"><a href="#result"><div><div class="t">Вам могут вернуть примерно</div><div class="v" id="barTotal">0 ₽</div></div><span class="go">Подробнее</span></a></div>
 
 <script src="calc.js"></script>
@@ -371,22 +369,38 @@
   $('#bar a').addEventListener('click', e => { e.preventDefault(); $('#result').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
   function plural(n, a, b, c) { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? a : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? b : c; }
 
-  // --- скопировать расчёт ---
-  $('#b-copy').addEventListener('click', async () => {
-    let text;
+  // --- сообщение с расчётом: копируется при нажатии на мессенджер ---
+  function message() {
     if (last && last.items.length) {
       const sum = last.income ? last.total : last.items.reduce((s, i) => s + i.refund, 0);
-      text = 'Здравствуйте, Юлия! Посчитал(а) на калькуляторе вычета:\n\n' +
+      return 'Здравствуйте, Юлия! Посчитал(а) на калькуляторе вычета:\n\n' +
         (last.income ? `Зарплата: ${fmt(last.income / 12)} в месяц\n` : 'Зарплату не указал(а)\n') +
         last.items.map(i => `— ${i.label} (13% от ${fmt(i.base)}): ${fmt(i.refund)}`).join('\n') +
         `\n\n💰 Итого вернут примерно: ${fmt(sum)}\n\nХочу точный расчёт.`;
-    } else {
-      text = 'Здравствуйте, Юлия! Хочу узнать, какой налоговый вычет мне положен.';
     }
-    try { await navigator.clipboard.writeText(text); }
-    catch (e) { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
-    const toast = $('#toast'); toast.classList.add('on'); setTimeout(() => toast.classList.remove('on'), 2200);
-    goal('copy_result');
+    return 'Здравствуйте, Юлия! Хочу узнать, какой налоговый вычет мне положен.';
+  }
+  function copy(text) {
+    // запасной способ сначала — он срабатывает синхронно и во встроенных браузерах соцсетей
+    let ok = false;
+    try { const t = document.createElement('textarea'); t.value = text; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select(); t.setSelectionRange(0, text.length); ok = document.execCommand('copy'); t.remove(); } catch (e) {}
+    try { if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {}); } catch (e) {}
+    return ok;
+  }
+  function toast(msg, ms) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('on'), ms); }
+
+  // Telegram умеет подставлять текст в поле сам (?text=); Instagram и MAX — нет: копируем, показываем подсказку и открываем чат
+  [['#b-max', CONFIG.max, false], ['#b-ig', CONFIG.instagram, false], ['#b-tg', CONFIG.telegram, true]].forEach(([id, url, prefill]) => {
+    if (!url) return;
+    $(id).addEventListener('click', e => {
+      const text = message();
+      copy(text);
+      if (prefill) { $(id).href = url + '?text=' + encodeURIComponent(text); toast('Сообщение с расчётом уже в поле — нажмите «Отправить»', 3000); return; }
+      e.preventDefault();
+      toast('Ваш расчёт скопирован — вставьте его в чат и отправьте', 1600);
+      setTimeout(() => { location.href = url; }, 1300);
+    });
   });
 
   update();
