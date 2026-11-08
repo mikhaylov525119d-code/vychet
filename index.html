@@ -235,10 +235,10 @@
     <h2>Хотите точный расчёт и вернуть деньги без хлопот?</h2>
     <p>Напишите мне — проверю ваш случай, соберу документы и подам декларацию за вас.</p>
     <div class="btns" id="btns">
-      <a class="btn main" id="b-tg" target="_blank" rel="noopener"><svg><use href="#i-tg"/></svg>Написать в Telegram</a>
+      <a class="btn main" id="b-max" target="_blank" rel="noopener">Написать в <b style="font-weight:900;letter-spacing:.03em">MAX</b></a>
       <div class="two">
+        <a class="btn sec" id="b-tg" target="_blank" rel="noopener"><svg><use href="#i-tg"/></svg>Telegram</a>
         <a class="btn sec" id="b-ig" target="_blank" rel="noopener"><svg><use href="#i-ig"/></svg>Instagram</a>
-        <a class="btn sec" id="b-max" target="_blank" rel="noopener"><b style="font-weight:900">MAX</b></a>
       </div>
       <a class="btn sec" id="b-phone"><svg><use href="#i-phone"/></svg><span id="phoneText"></span></a>
       <button class="btn ghost" id="b-copy" type="button"><svg><use href="#i-copy"/></svg>Скопировать мой расчёт для сообщения</button>
@@ -290,8 +290,8 @@
   setLink('#b-max', CONFIG.max);
   setLink('#b-phone', 'tel:' + CONFIG.phone);
   $('#phoneText').textContent = CONFIG.phoneText;
-  if (!CONFIG.instagram && !CONFIG.max) $('.two').hidden = true;
-  else if (!CONFIG.instagram || !CONFIG.max) $('.two').style.gridTemplateColumns = '1fr';
+  if (!CONFIG.telegram && !CONFIG.instagram) $('.two').hidden = true;
+  else if (!CONFIG.telegram || !CONFIG.instagram) $('.two').style.gridTemplateColumns = '1fr';
   [['#b-tg', 'cta_tg'], ['#b-ig', 'cta_ig'], ['#b-max', 'cta_max'], ['#b-phone', 'cta_phone']].forEach(([id, g]) => $(id).addEventListener('click', () => goal(g)));
 
   // --- поля с суммами: пробелы между разрядами ---
