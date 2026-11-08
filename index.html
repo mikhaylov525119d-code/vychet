@@ -240,8 +240,8 @@
         <a class="btn sec" id="b-tg" target="_blank" rel="noopener"><svg><use href="#i-tg"/></svg>Telegram</a>
         <a class="btn sec" id="b-ig" target="_blank" rel="noopener"><svg><use href="#i-ig"/></svg>Instagram</a>
       </div>
-      <a class="btn sec" id="b-phone"><svg><use href="#i-phone"/></svg><span id="phoneText"></span></a>
-      <button class="btn ghost" id="b-copy" type="button"><svg><use href="#i-copy"/></svg>Скопировать мой расчёт для сообщения</button>
+      <a class="btn sec" id="b-phone" href="tel:+79224401919"><svg><use href="#i-phone"/></svg><span id="phoneText">+7 922 440 19 19</span></a>
+      <button class="btn ghost" id="b-copy" type="button"><svg><use href="#i-copy"/></svg>Скопировать мой расчёт</button>
     </div>
   </section>
 
@@ -373,10 +373,16 @@
 
   // --- скопировать расчёт ---
   $('#b-copy').addEventListener('click', async () => {
-    let text = 'Здравствуйте, Юлия! Посчитал(а) на калькуляторе:\n';
-    if (last && last.items.length && last.income) {
-      text += last.items.map(i => `— ${i.label}: ${fmt(i.refund)}`).join('\n') + `\nИтого примерно ${fmt(last.total)}. Хочу точный расчёт.`;
-    } else text += 'хочу узнать, какой вычет мне положен.';
+    let text;
+    if (last && last.items.length) {
+      const sum = last.income ? last.total : last.items.reduce((s, i) => s + i.refund, 0);
+      text = 'Здравствуйте, Юлия! Посчитал(а) на калькуляторе вычета:\n\n' +
+        (last.income ? `Зарплата: ${fmt(last.income / 12)} в месяц\n` : 'Зарплату не указал(а)\n') +
+        last.items.map(i => `— ${i.label} (13% от ${fmt(i.base)}): ${fmt(i.refund)}`).join('\n') +
+        `\n\n💰 Итого вернут примерно: ${fmt(sum)}\n\nХочу точный расчёт.`;
+    } else {
+      text = 'Здравствуйте, Юлия! Хочу узнать, какой налоговый вычет мне положен.';
+    }
     try { await navigator.clipboard.writeText(text); }
     catch (e) { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
     const toast = $('#toast'); toast.classList.add('on'); setTimeout(() => toast.classList.remove('on'), 2200);
