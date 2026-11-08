@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Калькулятор налогового вычета — Юлия Михайлова</title>
+<meta name="description" content="Узнайте за минуту, сколько налога вам вернёт государство: квартира, ипотека, лечение, учёба, спорт, ИИС.">
+<meta property="og:title" content="Калькулятор налогового вычета">
+<meta property="og:description" content="Узнайте за минуту, сколько вам вернёт государство. Юлия Михайлова, налоговый консультант.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f7f2ea">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%23b8662a'/><path d='M26 48V16h9a9 9 0 0 1 0 18H21M21 41h15' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f2ea; --surface: #ffffff; --surface-2: #fbf7f1;
+    --ink: #2a2420; --muted: #7a6e63; --line: #e8ddd0;
+    --accent: #b8662a; --accent-ink: #8f4c1c; --accent-soft: #f5e6d5;
+    --gold: linear-gradient(180deg, #c98a45 0%, #a8682d 55%, #8a5221 100%);
+    --ok: #2f7a4f;
+    --radius: 22px;
+    --shadow: 0 1px 2px rgba(60,40,20,.05), 0 10px 30px rgba(120,80,40,.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Manrope', system-ui, -apple-system, sans-serif; font-size: 16px; line-height: 1.45;
+    background-image: radial-gradient(90% 40% at 100% 0%, #f1dfc8 0%, rgba(241,223,200,0) 70%); background-repeat: no-repeat; min-height: 100vh; }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 22px 16px 110px; }
+
+  header .brand { display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+  header .brand i { width: 28px; height: 2px; background: var(--accent); }
+  h1 { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 34px; line-height: 1.1; margin: 18px 0 10px; letter-spacing: -.01em; }
+  h1 span { color: var(--accent); }
+  .lead { color: var(--muted); font-size: 16px; }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; margin-top: 18px; }
+  .step { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 17px; margin-bottom: 14px; }
+  .step b { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; flex: none; font-size: 14px; color: #fff; background: var(--accent); }
+  .hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  label.f { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; }
+  label.f:first-child { margin-top: 0; }
+  .money { position: relative; }
+  .money input, select { width: 100%; height: 52px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--surface-2);
+    font: 700 18px 'Manrope', sans-serif; color: var(--ink); padding: 0 44px 0 16px; outline: none; transition: border-color .15s, background .15s; }
+  select { padding-right: 16px; font-size: 16px; appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' fill='none' stroke='%237a6e63' stroke-width='2'/></svg>"); background-repeat: no-repeat; background-position: right 16px center; }
+  .money input:focus, select:focus { border-color: var(--accent); background: #fff; }
+  .money::after { content: '₽'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--muted); }
+  .money input::placeholder { color: #c4b8aa; font-weight: 600; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px; border-radius: 999px; border: 1.5px solid var(--line);
+    background: var(--surface-2); font: 700 14px 'Manrope', sans-serif; color: var(--ink); cursor: pointer; user-select: none; transition: all .15s; }
+  .chip svg { width: 20px; height: 20px; flex: none; }
+  .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+
+  .group { display: none; margin-top: 16px; padding: 16px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); }
+  .group.on { display: block; animation: fade .2s ease-out; }
+  @keyframes fade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .group h3 { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .group h3 svg { width: 20px; height: 20px; }
+  .check { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; font-size: 14px; cursor: pointer; }
+  .check input { width: 20px; height: 20px; accent-color: var(--accent); flex: none; margin-top: 1px; }
+  .stepper { display: flex; align-items: center; gap: 0; border: 1.5px solid var(--line); border-radius: 14px; overflow: hidden; width: max-content; background: var(--surface-2); }
+  .stepper button { width: 48px; height: 48px; border: 0; background: transparent; font: 700 22px 'Manrope'; color: var(--accent); cursor: pointer; }
+  .stepper output { min-width: 40px; text-align: center; font-weight: 800; font-size: 18px; }
+
+  /* результат */
+  .result { background: linear-gradient(180deg, #fff 0%, #fdf8f2 100%); border: 1.5px solid #e6cfb4; }
+  .result .k { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .big { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 46px; line-height: 1.05; margin: 6px 0 2px;
+    background: var(--gold); -webkit-background-clip: text; background-clip: text; color: transparent; white-space: nowrap; }
+  .empty { color: var(--muted); font-size: 15px; padding: 6px 0 2px; }
+  .rows { margin-top: 14px; border-top: 1px dashed var(--line); }
+  .row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 15px; }
+  .row span:last-child { font-weight: 800; white-space: nowrap; }
+  .row small { display: block; color: var(--muted); font-size: 12px; }
+  .notes { margin-top: 14px; display: grid; gap: 8px; }
+  .note { display: flex; gap: 10px; font-size: 14px; padding: 12px 14px; border-radius: 14px; background: var(--accent-soft); color: #5a3a1f; }
+  .note svg { width: 20px; height: 20px; flex: none; margin-top: 1px; }
+  .note.warn { background: #fdf0e1; }
+
+  .cta { margin-top: 18px; }
+  .cta h2 { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 24px; line-height: 1.15; }
+  .cta p { color: var(--muted); font-size: 14px; margin: 6px 0 14px; }
+  .btns { display: grid; gap: 10px; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 54px; border-radius: 16px; font: 800 16px 'Manrope', sans-serif;
+    text-decoration: none; cursor: pointer; border: 0; transition: transform .1s, filter .15s; }
+  .btn:active { transform: scale(.98); }
+  .btn svg { width: 22px; height: 22px; }
+  .btn.main { color: #fff; background: linear-gradient(180deg, #c7773a 0%, #a85a22 100%); box-shadow: 0 8px 22px rgba(168,90,34,.3); }
+  .btn.sec { color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); }
+  .btn.ghost { color: var(--accent-ink); background: transparent; border: 1.5px dashed #dcc3a6; height: 48px; font-size: 15px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  footer { margin-top: 26px; font-size: 12px; color: var(--muted); text-align: center; line-height: 1.6; }
+  footer a { color: var(--accent-ink); }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; background: var(--ink); color: #fff; font-weight: 700; font-size: 14px;
+    padding: 12px 18px; border-radius: 12px; transition: all .25s; pointer-events: none; z-index: 10; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+  [hidden] { display: none !important; }
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(255,255,255,.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line);
+    transform: translateY(110%); transition: transform .25s; }
+  .bar.on { transform: none; }
+  .bar a { max-width: 520px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; text-decoration: none; color: var(--ink); }
+  .bar .t { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .bar .v { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 26px; background: var(--gold); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .bar .go { flex: none; height: 42px; padding: 0 16px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; font-size: 14px; color: #fff; background: linear-gradient(180deg, #c7773a 0%, #a85a22 100%); }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/></g></symbol>
+  <symbol id="i-pct" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 15.5l7-7"/><circle cx="9" cy="9" r="1.3"/><circle cx="15" cy="15" r="1.3"/></g></symbol>
+  <symbol id="i-med" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></g></symbol>
+  <symbol id="i-edu" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 22 9l-10 5L2 9z"/><path d="M6 11v4.5c0 1.6 2.7 3 6 3s6-1.4 6-3V11"/></g></symbol>
+  <symbol id="i-kids" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c0-3.2 2.5-5.5 5.5-5.5s5.5 2.3 5.5 5.5"/><circle cx="17" cy="10" r="2.2"/><path d="M15.8 15c2.6-.3 4.7 1.6 4.7 4.5"/></g></symbol>
+  <symbol id="i-sport" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8v8M18 8v8M3 10v4M21 10v4M6 12h12"/></g></symbol>
+  <symbol id="i-iis" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></g></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></g></symbol>
+  <symbol id="i-tg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M21.5 3.5 2.8 10.7c-.9.4-.9 1.6.1 1.9l4.7 1.5 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.8 3.5c.7.5 1.7.1 1.9-.7L23 4.9c.2-1-.6-1.8-1.5-1.4z"/><path d="m7.6 14.1 10.2-6.6-7.4 7.5"/></g></symbol>
+  <symbol id="i-ig" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></g></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h3.5l1.8 4.5-2.3 1.4a11 11 0 0 0 7.1 7.1l1.4-2.3L21 15.5V19a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 3 5.2 2 2 0 0 1 5 3z"/></g></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></g></symbol>
+</defs></svg>
+
+<div class="wrap">
+  <header>
+    <div class="brand"><i></i>Юлия Михайлова · налоговый консультант</div>
+    <h1>Калькулятор <span>налогового вычета</span></h1>
+    <p class="lead">Узнайте за минуту, сколько налога вам вернёт государство.</p>
+  </header>
+
+  <!-- 1. Доход -->
+  <section class="card">
+    <div class="step"><b>1</b>Ваша зарплата</div>
+    <label class="f" for="salary">Сколько вы получаете в месяц до вычета налога</label>
+    <div class="money"><input id="salary" inputmode="numeric" autocomplete="off" placeholder="например, 80 000"></div>
+    <p class="hint">Вернуть можно не больше налога, который вы заплатили, — поэтому он важен. «На руки» — это примерно 87% от этой суммы.</p>
+  </section>
+
+  <!-- 2. Расходы -->
+  <section class="card">
+    <div class="step"><b>2</b>Что у вас было?</div>
+    <div class="chips" id="chips">
+      <button class="chip" data-g="property" aria-pressed="false"><svg><use href="#i-home"/></svg>Квартира, дом</button>
+      <button class="chip" data-g="mortgage" aria-pressed="false"><svg><use href="#i-pct"/></svg>Ипотека</button>
+      <button class="chip" data-g="medical" aria-pressed="false"><svg><use href="#i-med"/></svg>Лечение</button>
+      <button class="chip" data-g="ownEdu" aria-pressed="false"><svg><use href="#i-edu"/></svg>Своя учёба</button>
+      <button class="chip" data-g="kids" aria-pressed="false"><svg><use href="#i-kids"/></svg>Учёба детей</button>
+      <button class="chip" data-g="sport" aria-pressed="false"><svg><use href="#i-sport"/></svg>Спорт</button>
+      <button class="chip" data-g="iis" aria-pressed="false"><svg><use href="#i-iis"/></svg>ИИС</button>
+    </div>
+    <p class="hint" id="chipsHint">Отметьте всё, что подходит, — появятся поля для сумм.</p>
+
+    <div class="group" id="g-property">
+      <h3><svg><use href="#i-home"/></svg>Покупка жилья</h3>
+      <label class="f" for="property">Стоимость квартиры или дома</label>
+      <div class="money"><input id="property" inputmode="numeric" placeholder="например, 6 500 000"></div>
+      <label class="f" for="purchaseYear">Когда купили</label>
+      <select id="purchaseYear">
+        <option value="2023">в 2023 году или раньше</option>
+        <option value="2024">в 2024 году</option>
+        <option value="2025" selected>в 2025 году</option>
+        <option value="2026">в 2026 году</option>
+      </select>
+      <label class="check"><input type="checkbox" id="propertyUsed"><span>Я уже получал(а) вычет за другое жильё</span></label>
+      <p class="hint">Вычет считается максимум с 2 000 000 ₽. Если квартира в браке — вычет может получить и супруг(а).</p>
+    </div>
+
+    <div class="group" id="g-mortgage">
+      <h3><svg><use href="#i-pct"/></svg>Проценты по ипотеке</h3>
+      <label class="f" for="mortgage">Сколько процентов вы уже заплатили банку</label>
+      <div class="money"><input id="mortgage" inputmode="numeric" placeholder="например, 900 000"></div>
+      <p class="hint">Это не весь платёж, а только проценты — их видно в приложении банка или в справке. Максимум — с 3 000 000 ₽.</p>
+    </div>
+
+    <div class="group" id="g-medical">
+      <h3><svg><use href="#i-med"/></svg>Лечение и лекарства</h3>
+      <label class="f" for="medical">Сколько потратили за год</label>
+      <div class="money"><input id="medical" inputmode="numeric" placeholder="например, 70 000"></div>
+      <label class="check"><input type="checkbox" id="expensive"><span>Это дорогостоящее лечение (сложная операция, ЭКО и т. п.)</span></label>
+      <p class="hint">Себе, детям, супругу или родителям. Дорогостоящее лечение считается без лимита — уточним по справке клиники.</p>
+    </div>
+
+    <div class="group" id="g-ownEdu">
+      <h3><svg><use href="#i-edu"/></svg>Своя учёба</h3>
+      <label class="f" for="ownEdu">Сколько заплатили за год</label>
+      <div class="money"><input id="ownEdu" inputmode="numeric" placeholder="например, 120 000"></div>
+      <p class="hint">Вуз, курсы, автошкола — у организации должна быть лицензия. Также учёба супруга, брата или сестры.</p>
+    </div>
+
+    <div class="group" id="g-kids">
+      <h3><svg><use href="#i-kids"/></svg>Учёба детей</h3>
+      <label class="f" for="kidsEdu">Сколько заплатили за год (за всех детей)</label>
+      <div class="money"><input id="kidsEdu" inputmode="numeric" placeholder="например, 180 000"></div>
+      <label class="f">Сколько детей учится</label>
+      <div class="stepper"><button type="button" id="kidsMinus" aria-label="Меньше">−</button><output id="kids">1</output><button type="button" id="kidsPlus" aria-label="Больше">+</button></div>
+      <p class="hint">Садик, школа, кружки, вуз — до 110 000 ₽ на каждого ребёнка в год. Ребёнку до 24 лет, обучение очное.</p>
+    </div>
+
+    <div class="group" id="g-sport">
+      <h3><svg><use href="#i-sport"/></svg>Спорт и фитнес</h3>
+      <label class="f" for="sport">Сколько заплатили за год</label>
+      <div class="money"><input id="sport" inputmode="numeric" placeholder="например, 40 000"></div>
+      <p class="hint">Клуб или секция должны быть в перечне Минспорта.</p>
+    </div>
+
+    <div class="group" id="g-iis">
+      <h3><svg><use href="#i-iis"/></svg>Инвестиционный счёт (ИИС)</h3>
+      <label class="f" for="iis">Сколько внесли на ИИС за год</label>
+      <div class="money"><input id="iis" inputmode="numeric" placeholder="например, 400 000"></div>
+      <p class="hint">Вычет считается максимум с 400 000 ₽ в год.</p>
+    </div>
+  </section>
+
+  <!-- 3. Результат -->
+  <section class="card result" id="result" aria-live="polite">
+    <div class="step"><b>3</b>Вам могут вернуть</div>
+    <div id="resEmpty" class="empty">Укажите зарплату и отметьте свои расходы — сумма появится здесь.</div>
+    <div id="resFull" hidden>
+      <div class="k">примерно</div>
+      <div class="big" id="total">0 ₽</div>
+      <div class="rows" id="rows"></div>
+      <div class="notes" id="notes"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="card cta">
+    <h2>Хотите точный расчёт и вернуть деньги без хлопот?</h2>
+    <p>Напишите мне — проверю ваш случай, соберу документы и подам декларацию за вас.</p>
+    <div class="btns" id="btns">
+      <a class="btn main" id="b-tg" target="_blank" rel="noopener"><svg><use href="#i-tg"/></svg>Написать в Telegram</a>
+      <div class="two">
+        <a class="btn sec" id="b-ig" target="_blank" rel="noopener"><svg><use href="#i-ig"/></svg>Instagram</a>
+        <a class="btn sec" id="b-max" target="_blank" rel="noopener"><b style="font-weight:900">MAX</b></a>
+      </div>
+      <a class="btn sec" id="b-phone"><svg><use href="#i-phone"/></svg><span id="phoneText"></span></a>
+      <button class="btn ghost" id="b-copy" type="button"><svg><use href="#i-copy"/></svg>Скопировать мой расчёт для сообщения</button>
+    </div>
+  </section>
+
+  <footer>
+    Расчёт примерный и не является налоговой консультацией. Точную сумму можно назвать после проверки документов.<br>
+    Правила вычетов на 2026 год, ставка НДФЛ 13%.<br>
+    © Юлия Михайлова, налоговый консультант · работаю по всей России
+  </footer>
+</div>
+<div class="toast" id="toast">Расчёт скопирован — вставьте его в сообщение</div>
+<div class="bar" id="bar"><a href="#result"><div><div class="t">Вам могут вернуть примерно</div><div class="v" id="barTotal">0 ₽</div></div><span class="go">Подробнее</span></a></div>
+
+<script src="calc.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ===== НАСТРОЙКИ — заполнить один раз ===== */
+  const CONFIG = {
+    phone: '+79224401919',
+    phoneText: '+7 922 440 19 19',
+    telegram: 'https://t.me/+79224401919',   // открывает чат по номеру телефона
+    instagram: '',                          // напр. 'https://ig.me/m/yulia_vychet' — ник Юлии
+    max: '',                                // ссылка на профиль/чат Юлии в MAX
+    metrika: '',                            // номер счётчика Яндекс Метрики, напр. '98765432'
+  };
+  /* ========================================= */
+
+  const $ = s => document.querySelector(s);
+  const fmt = v => Math.round(v).toLocaleString('ru-RU').replace(/ | /g, ' ') + ' ₽';
+  const src = (new URLSearchParams(location.search).get('src') || '').slice(0, 20);
+
+  // --- Метрика (если указан номер) ---
+  if (CONFIG.metrika) {
+    (function (m, e, t, r, i, k, a) { m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); }; m[i].l = 1 * new Date();
+      k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a);
+    })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+    ym(CONFIG.metrika, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true, params: { src: src || 'direct' } });
+  }
+  const goal = name => { try { if (CONFIG.metrika) ym(CONFIG.metrika, 'reachGoal', name, { src }); } catch (e) {} };
+
+  // --- кнопки связи ---
+  const setLink = (id, href) => { const a = $(id); if (href) a.href = href; else a.hidden = true; };
+  setLink('#b-tg', CONFIG.telegram);
+  setLink('#b-ig', CONFIG.instagram);
+  setLink('#b-max', CONFIG.max);
+  setLink('#b-phone', 'tel:' + CONFIG.phone);
+  $('#phoneText').textContent = CONFIG.phoneText;
+  if (!CONFIG.instagram && !CONFIG.max) $('.two').hidden = true;
+  else if (!CONFIG.instagram || !CONFIG.max) $('.two').style.gridTemplateColumns = '1fr';
+  [['#b-tg', 'cta_tg'], ['#b-ig', 'cta_ig'], ['#b-max', 'cta_max'], ['#b-phone', 'cta_phone']].forEach(([id, g]) => $(id).addEventListener('click', () => goal(g)));
+
+  // --- поля с суммами: пробелы между разрядами ---
+  const moneyInputs = [...document.querySelectorAll('.money input')];
+  const num = el => Number((el.value || '').replace(/\D/g, '')) || 0;
+  moneyInputs.forEach(el => el.addEventListener('input', () => {
+    const v = el.value.replace(/\D/g, '').slice(0, 10);
+    el.value = v ? Number(v).toLocaleString('ru-RU').replace(/ | /g, ' ') : '';
+    update();
+  }));
+
+  // --- переключатели расходов ---
+  const on = {};
+  document.querySelectorAll('.chip').forEach(ch => ch.addEventListener('click', () => {
+    const g = ch.dataset.g, v = ch.getAttribute('aria-pressed') !== 'true';
+    ch.setAttribute('aria-pressed', v); on[g] = v;
+    $('#g-' + g).classList.toggle('on', v);
+    update();
+  }));
+  ['#purchaseYear', '#propertyUsed', '#expensive'].forEach(s => $(s).addEventListener('change', update));
+  let kids = 1;
+  const setKids = v => { kids = Math.max(1, Math.min(9, v)); $('#kids').textContent = kids; update(); };
+  $('#kidsMinus').addEventListener('click', () => setKids(kids - 1));
+  $('#kidsPlus').addEventListener('click', () => setKids(kids + 1));
+
+  // --- расчёт ---
+  const ic = id => `<svg><use href="#${id}"/></svg>`;
+  let last = null, reported = false;
+  function update() {
+    const med = on.medical ? num($('#medical')) : 0, exp = on.medical && $('#expensive').checked;
+    const d = {
+      salary: num($('#salary')),
+      property: on.property ? num($('#property')) : 0,
+      propertyUsed: on.property && $('#propertyUsed').checked,
+      purchaseYear: Number($('#purchaseYear').value),
+      mortgage: on.mortgage ? num($('#mortgage')) : 0,
+      medical: exp ? 0 : med, expensiveMed: exp ? med : 0,
+      ownEdu: on.ownEdu ? num($('#ownEdu')) : 0,
+      kidsEdu: on.kids ? num($('#kidsEdu')) : 0, kids,
+      sport: on.sport ? num($('#sport')) : 0,
+      iis: on.iis ? num($('#iis')) : 0,
+    };
+    const r = TaxCalc.calc(d);
+    last = r;
+    const hasExpenses = r.items.length > 0;
+    $('#resEmpty').hidden = d.salary > 0 && hasExpenses;
+    $('#resFull').hidden = !(d.salary > 0 && hasExpenses);
+    if (!d.salary && hasExpenses) $('#resEmpty').textContent = 'Укажите зарплату в шаге 1 — без неё не посчитать, сколько налога можно вернуть.';
+    else if (d.salary && !hasExpenses) $('#resEmpty').textContent = 'Отметьте в шаге 2, на что вы тратили деньги.';
+    else $('#resEmpty').textContent = 'Укажите зарплату и отметьте свои расходы — сумма появится здесь.';
+    hasResult = !$('#resFull').hidden; syncBar();
+    if (!hasResult) return;
+
+    $('#total').textContent = fmt(r.total);
+    $('#barTotal').textContent = fmt(r.total);
+    $('#rows').innerHTML = r.items.map(i =>
+      `<div class="row"><span>${i.label}<small>13% от ${fmt(i.base)}</small></span><span>${fmt(i.refund)}</span></div>`).join('');
+
+    const notes = [];
+    if (r.housingTotal > 0) {
+      if (r.housingYears > 1) notes.push(['', `Налога за год вы платите примерно <b>${fmt(r.taxPerYear)}</b> — поэтому вычет за жильё будете получать частями, примерно <b>${r.housingYears} ${plural(r.housingYears, 'год', 'года', 'лет')}</b>. Остаток не сгорает и переносится на следующие годы.`]);
+      if (r.backYears > 0 && r.housingNow > 0) notes.push(['', `Можно сразу подать декларации за ${r.backYears === 1 ? 'прошлый год' : 'прошлые ' + r.backYears + ' ' + plural(r.backYears, 'год', 'года', 'лет')} и вернуть до <b>${fmt(r.housingNow)}</b> уже в ближайшие месяцы.`]);
+    }
+    if (r.yearlyCapped) notes.push(['warn', `Вычеты за лечение, учёбу и т. п. больше налога, который вы платите за год, поэтому за год вернут не больше <b>${fmt(r.yearlyRefund)}</b>. Остаток этих вычетов, к сожалению, не переносится.`]);
+    if (r.yearlyRefund > 0) notes.push(['', 'Вычеты за лечение, учёбу, спорт и ИИС можно вернуть за 3 последних года — если такие траты были и раньше, сумма будет больше.']);
+    if (r.highIncome) notes.push(['warn', 'При доходе выше 2,4 млн ₽ в год часть налога идёт по ставке 15% — напишите мне, посчитаю точно.']);
+    $('#notes').innerHTML = notes.map(([cls, t]) => `<div class="note ${cls}">${ic('i-info')}<div>${t}</div></div>`).join('');
+
+    if (!reported) { reported = true; goal('calc_result'); }
+  }
+  // полоска с суммой внизу экрана — видна, пока сам блок результата за кадром
+  let hasResult = false, resultVisible = false;
+  function syncBar() { $('#bar').classList.toggle('on', hasResult && !resultVisible); }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => { resultVisible = e.isIntersecting; syncBar(); }, { threshold: 0.15 }).observe($('#result'));
+  }
+  $('#bar a').addEventListener('click', e => { e.preventDefault(); $('#result').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  function plural(n, a, b, c) { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? a : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? b : c; }
+
+  // --- скопировать расчёт ---
+  $('#b-copy').addEventListener('click', async () => {
+    let text = 'Здравствуйте, Юлия! Посчитал(а) на калькуляторе:\n';
+    if (last && last.items.length && last.income) {
+      text += last.items.map(i => `— ${i.label}: ${fmt(i.refund)}`).join('\n') + `\nИтого примерно ${fmt(last.total)}. Хочу точный расчёт.`;
+    } else text += 'хочу узнать, какой вычет мне положен.';
+    try { await navigator.clipboard.writeText(text); }
+    catch (e) { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+    const toast = $('#toast'); toast.classList.add('on'); setTimeout(() => toast.classList.remove('on'), 2200);
+    goal('copy_result');
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
